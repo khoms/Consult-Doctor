@@ -1,2 +1,4 @@
 ->install express and dotenv and nodemon
-->created development and production environmnt for running server
+->created development and production environmnt for running server  
+-> added all required folders routes controller middleware
+->install morgan 

@@ -5,7 +5,8 @@ const User = mongoose.model('User', {
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        unique:true
     },
     email: {
         type: String,
@@ -37,6 +38,13 @@ const User = mongoose.model('User', {
                 throw new Error('Age must be a postive number')
             }
         }
+    },
+    phone:{
+        type:String,
+        maxLength:[10,'Phone number can not be longer than 10 characters']
+    },
+    address:{
+        type:String
     }
 })
 

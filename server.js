@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
-
+// const logger = require('./src/middleware/logger');
+const morgan = require('morgan');
 const connectDB = require('./config/db');
 
 //Route files 
@@ -12,6 +13,15 @@ dotenv.config({path:'./config/config.env'});
 connectDB();
 
 const app = express();
+
+//Body parser
+
+app.use(express.json());
+// app.use(logger);
+//Dev logging middleware
+if(process.env.NODE_ENV ==='development'){
+    app.use(morgan('dev'));
+}
 
 //Mount routers
 app.use('/api/user',user);
