@@ -4,13 +4,13 @@ const validator = require('validator')
 const User = mongoose.model('User', {
     name: {
         type: String,
-        required: true,
+        required: [true,'Please add yout name'],
         trim: true,
         unique:true
     },
     email: {
         type: String,
-        required: true,
+        required: [true,'Please add your email'],
         trim: true,
         lowercase: true,
         validate(value) {
@@ -21,7 +21,7 @@ const User = mongoose.model('User', {
     },
     password: {
         type: String,
-        required: true,
+        required: [true,'Please add your password'],
         minlength: 7,
         trim: true,
         validate(value) {
