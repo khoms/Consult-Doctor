@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 // const logger = require('./src/middleware/logger');
 const morgan = require('morgan');
+const errorHandler = require('./src/middleware/error');
 const connectDB = require('./config/db');
 
 //Route files 
@@ -25,7 +26,7 @@ if(process.env.NODE_ENV ==='development'){
 
 //Mount routers
 app.use('/api/user',user);
-
+app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 app.listen(
