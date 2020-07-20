@@ -6,7 +6,41 @@ const User = require('../models/user')
 //Route GET/users
 exports.getUsers =async(req,res,next)=>{
     try {
-        const users = await User.find();
+        let query;
+
+        //Copy req.QUery
+        const reqQuery= {...req.query};
+
+        //Fields to exclude
+        const removeFields =['select','sort'];
+
+        //Lop over removeFields and delete them from reqQuery
+        removeFields.forEach(param=>delete reqQuery[param]);
+        
+        // console.log(reqQuery);
+
+        //Create query string
+        let queryStr = JSON.stringify(reqQuery);
+
+        //Finding resource
+        query = User.find(JSON.parse(queryStr));
+
+        //Select fields
+        if(req.query.select){
+            const fields = req.query.select.split(',').join(' ');
+            // console.log(fields)
+            query = query.select(fields);
+        }
+
+        //Sort fields
+        if(req.query.sort){
+            const sortBy= req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+        }
+
+        //Executing query
+        const users = await query;
+
         res.status(200).json({success:true,count:users.length,data:users});
         
     } catch (error) {

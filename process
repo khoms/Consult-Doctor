@@ -2,3 +2,6 @@
 ->created development and production environmnt for running server  
 -> added all required folders routes controller middleware
 ->install morgan 
+->created user model and controller along with user routes
+->handling errors :For this created utils>errorResponse Class
+->errors handled using controller and middleware
