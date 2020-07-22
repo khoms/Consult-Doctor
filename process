@@ -5,3 +5,5 @@
 ->created user model and controller along with user routes
 ->handling errors :For this created utils>errorResponse Class
 ->errors handled using controller and middleware
+->install express-fileupload for uploading files
+->able to upload images 

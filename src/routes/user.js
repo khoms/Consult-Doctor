@@ -1,12 +1,14 @@
 const express = require('express')
 
 
-const { getUsers, getUser,createUser, updateUser, deleteUser } = require('../controller/user');
+const { getUsers, getUser,createUser, updateUser, deleteUser,userPhotoUpload } = require('../controller/user');
 
 const router = new express.Router();
 router.route('/').get(getUsers).post(createUser);
 
 router.route('/:id').get(getUser).put(updateUser).delete(deleteUser);
+
+router.route('/:id/photo').put(userPhotoUpload );
 // router.post('/users', async (req, res) => {
 //     const user = new User(req.body)
 

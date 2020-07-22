@@ -1,4 +1,5 @@
 const ErrorResponse = require('../utils/errorResponse');
+const path = require('path');
 
 const User = require('../models/user')
 
@@ -35,7 +36,7 @@ exports.getUsers =async(req,res,next)=>{
         //Sort fields
         if(req.query.sort){
             const sortBy= req.query.sort.split(',').join(' ');
-            query = query.sort(sortBy);
+            query = query.sort(sortBy);  
         }
 
         //Executing query
@@ -44,7 +45,7 @@ exports.getUsers =async(req,res,next)=>{
         res.status(200).json({success:true,count:users.length,data:users});
         
     } catch (error) {
-        res.status(400).json({success:false})
+        res.status(400).json({success:false})  
     }
     // res.status(200).json({success:true,msg:'Show all users'});
 
@@ -118,3 +119,53 @@ exports.deleteUser =async(req,res,next)=>{
     // res.status(200).json({success:true,msg:'Delete user'+req.params.id});
 }
 
+
+//upload photo
+//Route PUT/users/:id/photo
+exports.userPhotoUpload =async(req,res,next)=>{
+    try {
+        const user = await User.findById(req.params.id);
+        if(!user){
+            return next(new ErrorResponse('USer not found with id of'+ req.params.id ,404));
+        }
+
+        if(!req.files){
+            return next(new ErrorResponse('Please upload a file',400));
+        }
+
+        const file = req.files.file;
+
+        //Make sure that the image is a foto
+        if(!file.mimetype.startsWith('image')){
+            return next(new ErrorResponse('Please upload an image file',400));
+        }
+
+        //Check file size
+        if(file.size>process.env.MAX_FILE_UPLOAD){
+            return next(new ErrorResponse('Please upload an image file less than' + process.env.MAX_FILE_UPLOAD,400));
+        }
+
+        //Changing the name of photo/ rename
+        file.name= `photo_${user._id}${path.parse(file.name).ext}`;
+        console.log(file.name); 
+
+        file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err =>{
+            if(err){
+                console.log(err);
+                return next(new ErrorResponse('Problem with file upload',500));
+            }
+            
+            await User.findByIdAndUpdate(req.params.id,{photo:file.name});
+            
+            res.status(200).json({
+                success:true,
+                data:file.name
+            })
+        })
+       
+    } catch (err) {
+     res.status(400).json({success:false});
+    }
+
+    // res.status(200).json({success:true,msg:'Delete user'+req.params.id});
+}
