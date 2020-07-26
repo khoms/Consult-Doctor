@@ -7,3 +7,6 @@
 ->errors handled using controller and middleware
 ->install express-fileupload for uploading files
 ->able to upload images 
+=>time for authentication of user
+-> install bcryptjs for encrypting password
+->implement json web token(install jsonwebtoken)

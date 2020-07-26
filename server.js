@@ -10,6 +10,8 @@ const connectDB = require('./config/db');
 
 //Route files 
 const user= require('./src/routes/user')
+
+const auth= require('./src/routes/auth')
 //Load env vars
 dotenv.config({path:'./config/config.env'});
 
@@ -35,6 +37,8 @@ app.use(express.static(path.join(__dirname,'public')));
 
 //Mount routers
 app.use('/api/user',user);
+app.use('/api/auth',auth);
+
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
