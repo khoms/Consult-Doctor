@@ -5,29 +5,28 @@ const jwt = require('jsonwebtoken');
 
 // const User = mongoose.model('User', {
 //     name: {
-const DoctorSchema =new  mongoose.Schema({
+const AdminSchema =new  mongoose.Schema({
     name: {
         type: String,
-        required: [true,'Please add Doctors name'],
+        required: [true,'Please add yout name'],
         trim: true,
         unique:true
     },
-    nmcNo: {
+    email: {
         type: String,
-        required: [true,'Please add NMCnUM'],
+        required: [true,'Please add your email'],
         trim: true,
-        unique:true,
-        lowercase: true
-        // validate(value) {
-        //     if (!validator.isEmail(value)) {
-        //         throw new Error('Email is invalid')
-        //     }
-        // }
+        lowercase: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error('Email is invalid')
+            }
+        }
     },
     password: {
         type: String,
         required: [true,'Please add your password'],
-        minlength: 7,
+        minlength: 5,
         trim: true,
         validate(value) {
             if (value.toLowerCase().includes('password')) {
@@ -35,50 +34,30 @@ const DoctorSchema =new  mongoose.Schema({
             }
         }
     },
-    age: {
-        type: Number,
-        default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Age must be a postive number')
-            }
-        }
-    },
     phone:{
         type:String,
         maxLength:[10,'Phone number can not be longer than 10 characters']
-    },
-    qualification:{
-        type:String,
-        required:[true,'Please add Doctors Qualifications']
-    },
-    worksAt:{
-        type:String,
-        required:[true,'Please add Doctors working place']
-    },
-    noOfCases:{
-        type:Number
     }
 });
 
 //Encrypt password using bcrypt
-DoctorSchema.pre('save',async function(next){
+AdminSchema.pre('save',async function(next){
     const salt = await bcrypt.genSalt(10);
     this.password=  await bcrypt.hash(this.password,salt);
 })
 
 //Sign JWT and return
-DoctorSchema.methods.getSignedJwtToken = function(){
+AdminSchema.methods.getSignedJwtToken = function(){
     return jwt.sign({id:this._id},process.env.JWT_SECRET,{
         expiresIn:process.env.JWT_EXPIRE
     }) ;
 }
 
 //Match user entered password to hashed password in database
-DoctorSchema.methods.matchPassword =async function(enteredPassword){
+AdminSchema.methods.matchPassword =async function(enteredPassword){
     return await bcrypt.compare(enteredPassword,this.password);
 
 }
  
 
-module.exports = mongoose.model('Doctor',DoctorSchema);
+module.exports = mongoose.model('Admin',AdminSchema);
