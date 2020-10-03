@@ -1,7 +1,8 @@
 const ErrorResponse = require('../utils/errorResponse');
 const path = require('path');
 
-const User = require('../models/user')
+const User = require('../models/user');
+const Admin = require('../models/admin')
 
 
 
@@ -28,6 +29,8 @@ exports.register = async(req,res,next)=>{
 
     
 }
+
+
 
 
 //Login user
@@ -62,6 +65,44 @@ exports.login = async(req,res,next)=>{
     const token = user.getSignedJwtToken();
 
     res.status(200).json({success:true,token,data:user.id});
+        
+    } catch (err) {
+        next(err)
+        
+    }
+    
+
+    
+}
+
+exports.loginAdmin = async(req,res,next)=>{
+    const {email,password}= req.body; 
+
+    try {
+        //Validate email and password
+        if(!email || !password){
+            return next(new ErrorResponse('Please provide an email and pasword',400));
+
+        }
+
+        //Check for USer
+        const admin = await Admin.findOne({email}).select('+password');
+
+        if(!admin){
+            return next(new ErrorResponse('Invalid Email',401));
+        }
+
+        //Check if pw matches
+        const isMatch = await admin.matchPassword(password);
+
+        if(!isMatch){
+            return next(new ErrorResponse('Invalid Entries',400));
+        }
+
+    //Create token
+    const token = admin.getSignedJwtToken();
+
+    res.status(200).json({success:true,token,data:admin.id});
         
     } catch (err) {
         next(err)

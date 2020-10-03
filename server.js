@@ -18,6 +18,9 @@ const auth= require('./server/routes/auth')
 //Load env vars
 dotenv.config({path:'./config/config.env'});
 
+const http =require('https');  //add lter
+var fs = require('fs');  //addded later
+
 //Connect Db
 connectDB();
 
@@ -48,9 +51,9 @@ app.use('/api/admin',admin)
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
+
 app.listen(
-    PORT,
-    // 192.168.1.164:5000/api/admin,
+    PORT,'192.168.1.164',
     console.log('Server running in '+ process.env.NODE_ENV +' mode on port '+PORT)
     );
 

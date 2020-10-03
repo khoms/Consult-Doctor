@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "SET NODE_ENV=production & node server.js",
-    "dev":"nodemon server"
+    "dev":"nodemon server && npm start admin"
   },
   "repository": {
     "type": "git",

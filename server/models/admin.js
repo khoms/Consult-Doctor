@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const AdminSchema =new  mongoose.Schema({
     name: {
         type: String,
-        required: [true,'Please add yout name'],
+        required: [true,'Please add your name'],
         trim: true,
         unique:true
     },
