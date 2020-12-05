@@ -53,11 +53,15 @@ const DoctorSchema =new  mongoose.Schema({
         required:[true,'Please add Doctors Qualifications']
     },
     worksAt:{
-        type:String,
+        type:Array,
         required:[true,'Please add Doctors working place']
     },
     noOfCases:{
         type:Number
+    },
+    speciality:{
+        type:String,
+        required:[true,'Please add Doctors Speciality']
     }
 });
 

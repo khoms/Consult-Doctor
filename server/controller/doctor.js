@@ -42,7 +42,7 @@ exports.getDoctors =async(req,res,next)=>{
         //Executing query
         const doctors = await query;
 
-        res.status(200).json({success:true,count:doctors.length,data:doctors});
+        res.status(200).json({success:true,count:doctors.length,doctors:doctors});
         
     } catch (error) {
         res.status(400).json({success:false})  

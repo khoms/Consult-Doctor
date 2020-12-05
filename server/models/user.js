@@ -10,7 +10,7 @@ const UserSchema =new  mongoose.Schema({
         type: String,
         required: [true,'Please add yout name'],
         trim: true,
-        unique:true
+        // unique:true
     },
     email: {
         type: String,
@@ -49,7 +49,34 @@ const UserSchema =new  mongoose.Schema({
     },
     address:{
         type:String
+    },
+    dob:{
+        type:Date
+    },
+    height:{
+        type:Number,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('height must be a postive number')
+            }
+            if(value>300){
+                throw new Error('height cannot be grater than 300cm')
+            }
+        }
+    },
+    weight:{
+        type:Number,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('Weight must be a postive number')
+            }
+            if(value>300){
+                throw new Error('Weight cannot be grater than 300kg')
+            }
+        }
+
     }
+    
 });
 
 //Encrypt password using bcrypt

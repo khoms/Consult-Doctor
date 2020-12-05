@@ -165,6 +165,7 @@ exports.userPhotoUpload =async(req,res,next)=>{
        
     } catch (err) {
      res.status(400).json({success:false});
+     console.log(err.message)
     }
 
     // res.status(200).json({success:true,msg:'Delete user'+req.params.id});
