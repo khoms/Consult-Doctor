@@ -146,6 +146,7 @@ exports.userPhotoUpload =async(req,res,next)=>{
         }
 
         //Changing the name of photo/ rename
+        // file.name= `photo_${user._id}${path.parse(file.name).ext}`;
         file.name= `photo_${user._id}${path.parse(file.name).ext}`;
         console.log(file.name); 
 
