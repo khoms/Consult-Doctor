@@ -14,6 +14,10 @@ const NoticeSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please add Description"],
   },
+  category: {
+    type: String,
+    required: [true, "Please add ntice category"],
+  },
 });
 
 module.exports = mongoose.model("notice", NoticeSchema);

@@ -15,6 +15,7 @@ const doctor = require("./server/routes/doctor");
 const healthCenter = require("./server/routes/healthCenter");
 const notice = require("./server/routes/notice");
 const history = require("./server/routes/history");
+const note = require("./server/routes/notes");
 
 const auth = require("./server/routes/auth");
 
@@ -68,6 +69,7 @@ app.use("/api/notice", notice);
 app.use("/api/healthCenter", healthCenter);
 app.use("/api/admin", admin);
 app.use("/api/history", history);
+app.use("/api/note", note);
 
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;

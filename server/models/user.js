@@ -1,102 +1,109 @@
-const mongoose = require('mongoose')
-const validator = require('validator')
-const  bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // const User = mongoose.model('User', {
 //     name: {
-const UserSchema =new  mongoose.Schema({
-    name: {
-        type: String,
-        required: [true,'Please add yout name'],
-        trim: true,
-        // unique:true
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Please add yout name"],
+    trim: true,
+    // unique:true
+  },
+  email: {
+    type: String,
+    required: [true, "Please add your email"],
+    trim: true,
+    lowercase: true,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error("Email is invalid");
+      }
     },
-    email: {
-        type: String,
-        required: [true,'Please add your email'],
-        trim: true,
-        lowercase: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error('Email is invalid')
-            }
-        }
+  },
+  password: {
+    type: String,
+    required: [true, "Please add your password"],
+    minlength: 7,
+    trim: true,
+    validate(value) {
+      if (value.toLowerCase().includes("password")) {
+        throw new Error('Password cannot contain "password"');
+      }
     },
-    password: {
-        type: String,
-        required: [true,'Please add your password'],
-        minlength: 7,
-        trim: true,
-        validate(value) {
-            if (value.toLowerCase().includes('password')) {
-                throw new Error('Password cannot contain "password"')
-            }
-        }
+  },
+  age: {
+    type: Number,
+    default: 0,
+    validate(value) {
+      if (value < 0) {
+        throw new Error("Age must be a postive number");
+      }
     },
-    age: {
-        type: Number,
-        default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Age must be a postive number')
-            }
-        }
+  },
+  phone: {
+    type: String,
+    maxLength: [10, "Phone number can not be longer than 10 characters"],
+  },
+  address: {
+    type: String,
+  },
+  gender: {
+    type: String,
+  },
+  dob: {
+    type: Date,
+  },
+  height: {
+    type: Number,
+    validate(value) {
+      if (value < 0) {
+        throw new Error("height must be a postive number");
+      }
+      if (value > 300) {
+        throw new Error("height cannot be grater than 300cm");
+      }
     },
-    phone:{
-        type:String,
-        maxLength:[10,'Phone number can not be longer than 10 characters']
+  },
+  weight: {
+    type: Number,
+    validate(value) {
+      if (value < 0) {
+        throw new Error("Weight must be a postive number");
+      }
+      if (value > 300) {
+        throw new Error("Weight cannot be grater than 300kg");
+      }
     },
-    address:{
-        type:String
-    },
-    dob:{
-        type:Date
-    },
-    height:{
-        type:Number,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('height must be a postive number')
-            }
-            if(value>300){
-                throw new Error('height cannot be grater than 300cm')
-            }
-        }
-    },
-    weight:{
-        type:Number,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Weight must be a postive number')
-            }
-            if(value>300){
-                throw new Error('Weight cannot be grater than 300kg')
-            }
-        }
-
-    }
-    
+  },
 });
 
 //Encrypt password using bcrypt
-UserSchema.pre('save',async function(next){
-    const salt = await bcrypt.genSalt(10);
-    this.password=  await bcrypt.hash(this.password,salt);
-})
+UserSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+//Encrypt password using bc
+
+// rypt;
+UserSchema.methods.encryptPassword = async function (pw) {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.pw, salt);
+};
 
 //Sign JWT and return
-UserSchema.methods.getSignedJwtToken = function(){
-    return jwt.sign({id:this._id},process.env.JWT_SECRET,{
-        expiresIn:process.env.JWT_EXPIRE
-    }) ;
-}
+UserSchema.methods.getSignedJwtToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
 
 //Match user entered password to hashed password in database
-UserSchema.methods.matchPassword =async function(enteredPassword){
-    return await bcrypt.compare(enteredPassword,this.password);
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
-}
- 
-
-module.exports = mongoose.model('User',UserSchema);
+module.exports = mongoose.model("User", UserSchema);

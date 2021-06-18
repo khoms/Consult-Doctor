@@ -150,22 +150,25 @@ exports.noticePhotoUpload = async (req, res, next) => {
     }
 
     //Changing the name of photo/ rename
-    file.name = `photo_${notice._id}${path.parse(file.name).ext}`;
+    file.name = `${notice._id}${path.parse(file.name).ext}`;
     console.log(file.name);
 
-    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
-      if (err) {
-        console.log(err);
-        return next(new ErrorResponse("Problem with file upload", 500));
+    file.mv(
+      `${process.env.FILE_UPLOAD_PATH_NOTICE}/${file.name}`,
+      async (err) => {
+        if (err) {
+          console.log(err);
+          return next(new ErrorResponse("Problem with file upload", 500));
+        }
+
+        await Notice.findByIdAndUpdate(req.params.id, { photo: file.name });
+
+        res.status(200).json({
+          success: true,
+          data: file.name,
+        });
       }
-
-      await Notice.findByIdAndUpdate(req.params.id, { photo: file.name });
-
-      res.status(200).json({
-        success: true,
-        data: file.name,
-      });
-    });
+    );
   } catch (err) {
     res.status(400).json({ success: false });
   }
