@@ -43,12 +43,26 @@ const UserSchema = new mongoose.Schema({
       }
     },
   },
+
   phone: {
     type: String,
     maxLength: [10, "Phone number can not be longer than 10 characters"],
   },
   address: {
     type: String,
+  },
+  avatar: {
+    public_id: {
+      type: String,
+      required: true,
+      default: "aaaaa",
+    },
+    url: {
+      type: String,
+      required: true,
+      default:
+        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngitem.com%2Fmiddle%2FhmRJxhR_transparent-background-white-user-icon-png-png-download%2F&psig=AOvVaw0BxLLSrbDGTnsJFH6gxlzq&ust=1632238657248000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCMi14YDxjfMCFQAAAAAdAAAAABAD",
+    },
   },
   gender: {
     type: String,
@@ -78,6 +92,8 @@ const UserSchema = new mongoose.Schema({
       }
     },
   },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
 });
 
 //Encrypt password using bcrypt
@@ -106,4 +122,20 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
+UserSchema.methods.getResetPasswordToken = function () {
+  //Generate token
+  const resetToken = Math.trunc(Math.random() * 10000);
+
+  //Hash and set to resetPasswordToken
+  this.resetPasswordToken = resetToken;
+
+  //   crypto
+  //     .createHmac("khoms123", "230664ae53cbe5a07c6c389910540729")
+  //     .update(resetToken)
+  //     .digest("hex");
+  // //Set token expire time
+  this.resetPasswordExpire = Date.now() + 30 * 60 * 1000;
+
+  return resetToken;
+};
 module.exports = mongoose.model("User", UserSchema);

@@ -18,6 +18,11 @@ const NoticeSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please add ntice category"],
   },
+  imageUrl: {
+    type: String,
+    required: true,
+    default: "https://iol.edu.np/wp-content/uploads/2021/03/unnamed.png",
+  },
 });
 
 module.exports = mongoose.model("notice", NoticeSchema);

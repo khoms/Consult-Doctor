@@ -89,6 +89,7 @@ exports.updateNote = async (req, res, next) => {
   try {
     const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      runValidators: true,
     });
     if (!note) {
       return res.status(400).json({ success: false });
